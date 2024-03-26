@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human Registration</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h1>Welcome to Human Registration System</h1>
+<div>
+    <label for="nameInput">Name:</label>
+    <input type="text" id="nameInput">
+</div>
+<div>
+    <label for="ageInput">Age:</label>
+    <input type="number" id="ageInput">
+</div>
+<button id="saveButton">Save</button>
+<button id="showAllButton">Show All Registered Humans</button>
+<button id="sortByNameButton">Sort by Name</button>
+<button id="sortByAgeButton">Sort by Age</button>
+<div>
+    <label for="filterSelect">Filter:</label>
+    <select id="filterSelect">
+        <option value="all">All</option>
+        <option value="18plus">18+</option>
+        <option value="under18">Less than 18</option>
+    </select>
+</div>
+<ul id="registeredList"></ul>
+
+<script>
+    $(document).ready(function(){
+        var humans = [];
+
+        $("#saveButton").click(function(){
+            var name = $("#nameInput").val();
+            var age = parseInt($("#ageInput").val());
+            if(name && age) {
+                humans.push({name: name, age: age});
+                alert("Human saved successfully.");
+                $("#nameInput, #ageInput").val("");
+            } else {
+                alert("Please fill in both name and age fields.");
+            }
+        });
+
+        $("#showAllButton").click(function(){
+            $("#registeredList").empty();
+            humans.forEach(function(human){
+                $("#registeredList").append("<li>" + human.name + ", " + human.age + " years old</li>");
+            });
+        });
+
+        $("#sortByNameButton").click(function(){
+            humans.sort(function(a, b){
+                return a.name.localeCompare(b.name);
+            });
+            $("#showAllButton").click();
+        });
+
+        $("#sortByAgeButton").click(function(){
+            humans.sort(function(a, b){
+                return a.age - b.age;
+            });
+            $("#showAllButton").click();
+        });
+
+        $("#filterSelect").change(function(){
+            var filterValue = $(this).val();
+            $("#registeredList").empty();
+            if(filterValue === "18plus") {
+                humans.filter(function(human){
+                    return human.age >= 18;
+                }).forEach(function(filteredHuman){
+                    $("#registeredList").append("<li>" + filteredHuman.name + ", " + filteredHuman.age + " years old</li>");
+                });
+            } else if(filterValue === "under18") {
+                humans.filter(function(human){
+                    return human.age < 18;
+                }).forEach(function(filteredHuman){
+                    $("#registeredList").append("<li>" + filteredHuman.name + ", " + filteredHuman.age + " years old</li>");
+                });
+            } else {
+                $("#showAllButton").click();
+            }
+        });
+    });
+</script>
+</body>
+</html>
